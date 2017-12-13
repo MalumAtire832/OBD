@@ -1,7 +1,7 @@
 
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "OBD/version"
+require 'OBD/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "OBD"
@@ -45,4 +45,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "serialport", "~> 1.3.1"
+  spec.add_development_dependency "yard", "~> 0.9.12"
 end
