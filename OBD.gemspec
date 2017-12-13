@@ -10,7 +10,8 @@ Gem::Specification.new do |spec|
   spec.email         = ["harjan@knapper-development.nl"]
 
   spec.summary       = %q{A gem for connecting to a OBD device via serialport, wifi, or bluetooth.}
-  spec.description   = %q{Edit.}
+  spec.description   = %q{OBD is a gem that can be used to connect to a car's OBD interface.
+                          The gem is currently in alpha, but some features are already working.}
   spec.homepage      = "TODO: Put your gem's website or public repo URL here."
   spec.license       = "GNU V2"
 
@@ -19,8 +20,7 @@ Gem::Specification.new do |spec|
   if spec.respond_to?(:metadata)
     spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
   else
-    raise "RubyGems 2.0 or newer is required to protect against " \
-      "public gem pushes."
+    raise "RubyGems 2.0 or newer is required to protect against public gem pushes."
   end
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
