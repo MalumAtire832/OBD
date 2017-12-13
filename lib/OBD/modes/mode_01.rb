@@ -94,7 +94,7 @@ module OBD
           end
         end
 
-        {:FUEL_SYSTEM_1 => [detect.call(a), a], :FUEL_SYSTEM_2 => [detect.call(b), b]}
+        {:FUEL_SYSTEM_1 => detect.call(a), :FUEL_SYSTEM_2 => detect.call(b)}
       end
 
       public

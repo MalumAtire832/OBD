@@ -23,9 +23,20 @@ Gem::Specification.new do |spec|
     raise "RubyGems 2.0 or newer is required to protect against public gem pushes."
   end
 
-  spec.files         = `git ls-files -z`.split("\x0").reject do |f|
-    f.match(%r{^(test|spec|features)/})
-  end
+  # spec.files         = `git ls-files -z`.split("\x0").reject do |f|
+  #   f.match(%r{^(test|spec|features)/})
+  # end
+  spec.files = [
+      'lib/OBD/version.rb',
+      'lib/OBD.rb',
+      'lib/OBD/connection.rb',
+      'lib/OBD/controller.rb',
+      'lib/OBD/conversion.rb',
+      'lib/OBD/error.rb',
+      'lib/OBD/mode.rb',
+      'lib/OBD/parser.rb',
+      'lib/OBD/modes/mode_01.rb',
+  ]
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]

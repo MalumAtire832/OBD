@@ -6,7 +6,7 @@ module Conversion
   end
 
   public
-  def self.single_hex_to_4_bin(input)
+  def self.hex_to_bin_rjust(input)
     input.to_i(16).to_s(2).rjust(input.size*4, '0')
   end
 

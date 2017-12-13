@@ -3,6 +3,7 @@ require_relative 'requester'
 require_relative 'mode'
 require_relative 'parser'
 require_relative 'conversion'
+require_relative 'error'
 
 module OBD
 
