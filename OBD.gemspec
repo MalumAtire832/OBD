@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
   spec.description   = %q{OBD is a gem that can be used to connect to a car's OBD interface.
                           The gem is currently in alpha, but some features are already working.}
   spec.homepage      = "TODO: Put your gem's website or public repo URL here."
-  spec.license       = "GNU V2"
+  spec.license       = "GPL-3.0"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
   # to allow pushing to a single host or delete this section to allow pushing to any host.
@@ -41,9 +41,9 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_development_dependency "bundler", "~> 1.16.a"
+  spec.add_development_dependency "bundler", "~> 1.16"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
-  spec.add_development_dependency "serialport", "~> 1.3.1"
+  spec.add_development_dependency "serialport", "~> 1.3"
   spec.add_development_dependency "yard", "~> 0.9.12"
 end
