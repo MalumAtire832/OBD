@@ -12,3 +12,36 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 end
+
+def debug(message, indent)
+  indent.times {print "\s"}
+  puts "#{message}".blue
+end
+
+def test_single_value(amount)
+  l, h, t = 0, 0, 0
+  amount.times do
+    v = yield
+    t += v
+    l = v if v < l
+    h = v if v > h
+  end
+  {:LOW => l, :HIGH => h, :AVERAGE => t / amount}
+end
+
+def test_multiple_values(amount)
+  store = {}
+  amount.times do
+    yield_hash = yield
+    yield_hash.each_pair do |key, value|
+      value = value.round(2)
+      if store[key].nil?
+        store[key] = {:LOW => 0, :HIGH => 0, :TOTAL => 0, :AVERAGE => 0, }
+      end
+      store[key][:TOTAL] += value
+      store[key][:LOW] = value if value < store[key][:LOW]
+      store[key][:HIGH] = value if value > store[key][:HIGH]
+    end
+  end
+  store.each_key {|key| store[key][:AVERAGE] = (store[key][:TOTAL] / amount).round(1)}
+end

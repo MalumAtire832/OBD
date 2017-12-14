@@ -10,4 +10,6 @@ require 'OBD/modes/mode_01'
 
 module OBD
 
+  $device = '/dev/ttys001'
+
 end

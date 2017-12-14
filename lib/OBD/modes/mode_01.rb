@@ -69,7 +69,7 @@ module OBD
 
       public
       def get_timing_advance(override = false)
-        @parser
+        @parser.parse_timing_advance(request('0E', override))
       end
 
     end
@@ -130,7 +130,7 @@ module OBD
       public
       def parse_engine_load(input)
         #FixMe: [0..1] OR [2..3]???
-        a = Conversion.hex_to_dec(input.value)[0..1]
+        a = Conversion.hex_to_dec(input.value[0..1])
         (a / 2.55).round(2)
       end
 
@@ -143,7 +143,7 @@ module OBD
       public
       def parse_fuel_trim(input)
         a = Conversion.hex_to_dec(input.value)
-        (a / 1.28 - 100).round(2)
+        (a / 1.28 - 100).round(1)
       end
 
       public
@@ -170,9 +170,9 @@ module OBD
       end
 
       public
-      def parse_timing_speed(input)
+      def parse_timing_advance(input)
         a = Conversion.hex_to_dec(input.value)
-        ((a / 2) - 64).round(2)
+        ((a / 2.00) - 64.00).round(2)
       end
 
     end

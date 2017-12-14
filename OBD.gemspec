@@ -26,6 +26,8 @@ Gem::Specification.new do |spec|
   # spec.files         = `git ls-files -z`.split("\x0").reject do |f|
   #   f.match(%r{^(test|spec|features)/})
   # end
+
+  # noinspection RubyLiteralArrayInspection
   spec.files = [
       'lib/OBD/version.rb',
       'lib/OBD.rb',
@@ -46,4 +48,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "serialport", "~> 1.3"
   spec.add_development_dependency "yard", "~> 0.9.12"
+  spec.add_development_dependency "awesome_print", "~> 1.8.0"
 end
