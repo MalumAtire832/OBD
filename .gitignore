@@ -8,6 +8,7 @@
 /tmp/
 /main.rb
 /.idea/
-
+.DS_Store
 # rspec failure tracking
 .rspec_status
+*.gem

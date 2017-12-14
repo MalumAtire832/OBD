@@ -42,6 +42,26 @@ module OBD
         @parser.parse_vehicle_speed(request('0D', override))
       end
 
+      public
+      def get_fuel_trim(override = false)
+        {
+            :STFT_B1 => @parser.parse_fuel_trim(request('06', override)),
+            :LTFT_B1 => @parser.parse_fuel_trim(request('07', override)),
+            :STFT_B2 => @parser.parse_fuel_trim(request('08', override)),
+            :LTFT_B2 => @parser.parse_fuel_trim(request('09', override))
+        }
+      end
+
+      public
+      def get_fuel_pressure(override = false)
+        @parser.parse_fuel_pressure(request('0A', override))
+      end
+
+      public
+      def get_intake_manifold_pressure(override = false)
+        @parser.parse_intake_manifold_pressure(request('0B', override))
+      end
+
     end
 
 
@@ -110,6 +130,21 @@ module OBD
 
       public
       def parse_vehicle_speed(input)
+        Conversion.hex_to_dec(input.value)
+      end
+
+      public
+      def parse_fuel_trim(input)
+        (Conversion.hex_to_dec(input.value) / 1.28 - 100).round(2)
+      end
+
+      public
+      def parse_fuel_pressure(input)
+        Conversion.hex_to_dec(input.value) * 3
+      end
+
+      public
+      def parse_intake_manifold_pressure(input)
         Conversion.hex_to_dec(input.value)
       end
 
