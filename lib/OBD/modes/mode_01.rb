@@ -62,6 +62,11 @@ module OBD
         @parser.parse_intake_manifold_pressure(request('0B', override))
       end
 
+      public
+      def get_engine_rpm(override = false)
+        @parser.parse_engine_rpm(request('0C', override))
+      end
+
     end
 
 
@@ -120,12 +125,14 @@ module OBD
       public
       def parse_engine_load(input)
         #FixMe: [0..1] OR [2..3]???
-        (Conversion.hex_to_dec(input.value[0..1]) / 2.55).round(2)
+        a = Conversion.hex_to_dec(input.value)[0..1]
+        (a / 2.55).round(2)
       end
 
       public
       def parser_engine_coolant_temp(input)
-        Conversion.hex_to_dec(input.value) - 40
+        a = Conversion.hex_to_dec(input.value)
+        a - 40
       end
 
       public
@@ -135,17 +142,26 @@ module OBD
 
       public
       def parse_fuel_trim(input)
-        (Conversion.hex_to_dec(input.value) / 1.28 - 100).round(2)
+        a = Conversion.hex_to_dec(input.value)
+        (a / 1.28 - 100).round(2)
       end
 
       public
       def parse_fuel_pressure(input)
-        Conversion.hex_to_dec(input.value) * 3
+        a = Conversion.hex_to_dec(input.value)
+        a * 3
       end
 
       public
       def parse_intake_manifold_pressure(input)
         Conversion.hex_to_dec(input.value)
+      end
+
+      public
+      def parse_engine_rpm(input)
+        a = Conversion.hex_to_dec(input.value[0..1])
+        b = Conversion.hex_to_dec(input.value[2..3])
+        ((256.00 * a + b) / 4.00).round(2)
       end
 
     end
