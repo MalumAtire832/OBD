@@ -38,11 +38,6 @@ module OBD
       end
 
       public
-      def get_vehicle_speed(override = false)
-        @parser.parse_vehicle_speed(request('0D', override))
-      end
-
-      public
       def get_fuel_trim(override = false)
         {
             :STFT_B1 => @parser.parse_fuel_trim(request('06', override)),
@@ -65,6 +60,16 @@ module OBD
       public
       def get_engine_rpm(override = false)
         @parser.parse_engine_rpm(request('0C', override))
+      end
+
+      public
+      def get_vehicle_speed(override = false)
+        @parser.parse_vehicle_speed(request('0D', override))
+      end
+
+      public
+      def get_timing_advance(override = false)
+        @parser
       end
 
     end
@@ -136,11 +141,6 @@ module OBD
       end
 
       public
-      def parse_vehicle_speed(input)
-        Conversion.hex_to_dec(input.value)
-      end
-
-      public
       def parse_fuel_trim(input)
         a = Conversion.hex_to_dec(input.value)
         (a / 1.28 - 100).round(2)
@@ -162,6 +162,17 @@ module OBD
         a = Conversion.hex_to_dec(input.value[0..1])
         b = Conversion.hex_to_dec(input.value[2..3])
         ((256.00 * a + b) / 4.00).round(2)
+      end
+
+      public
+      def parse_vehicle_speed(input)
+        Conversion.hex_to_dec(input.value)
+      end
+
+      public
+      def parse_timing_speed(input)
+        a = Conversion.hex_to_dec(input.value)
+        ((a / 2) - 64).round(2)
       end
 
     end
