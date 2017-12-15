@@ -11,6 +11,7 @@ RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
+
 end
 
 def debug(message, indent)
@@ -44,4 +45,12 @@ def test_multiple_values(amount)
     end
   end
   store.each_key {|key| store[key][:AVERAGE] = (store[key][:TOTAL] / amount).round(1)}
+end
+
+def test_array_value(amount)
+  store = []
+  amount.times do
+    store << yield
+  end
+  return store
 end

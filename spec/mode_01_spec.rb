@@ -6,7 +6,6 @@ require 'spec_helper'
 RSpec.describe OBD::Mode_01::Controller do
 
   before do
-    # system("./obdsim -g Random")
     @settings = OBD::Connection::Settings::new($device, 9600, 8, 1, 0)
     @controller = OBD::Mode_01::Controller::new(@settings)
   end
@@ -187,6 +186,40 @@ RSpec.describe OBD::Mode_01::Controller do
     it "should range from 0 to 655.35 grams/sec." do
       expect(@result[:LOW]).to be >= 0
       expect(@result[:HIGH]).to be <= 655.35
+    end
+
+  end
+
+  describe ".get_throttle_position" do
+
+    before do
+      @result = test_single_value(50) {@controller.get_throttle_position}
+      debug("LOW: #{@result[:LOW]}", 4)
+      debug("HIGH: #{@result[:HIGH]}", 4)
+    end
+
+    it "should range from 0 to 100%" do
+      expect(@result[:LOW]).to be >= 0
+      expect(@result[:HIGH]).to be <= 100
+    end
+
+  end
+
+  describe ".get_commanded_secondary_air_status" do
+
+    before do
+      @statuses = [
+          'Upstream',
+          'Downstream of catalytic converter',
+          'From the outside atmosphere or off',
+          'Pump commanded on for diagnostics',
+          'Invalid Status'
+      ]
+      @result = test_array_value(50) {@controller.get_commanded_secondary_air_status}
+    end
+
+    it "should only contain values from a predetermined list." do
+      @result.each {|v| expect(@statuses).to include(v)}
     end
 
   end

@@ -6,6 +6,7 @@ module OBD
 
   module Mode_01
 
+    # noinspection RubyInstanceMethodNamingConvention
     class Controller < OBD::Controller
 
       public
@@ -82,11 +83,20 @@ module OBD
         @parser.parse_maf_airflow_rate(request('10', override))
       end
 
+      public
+      def get_throttle_position(override = false)
+        @parser.parse_throttle_position(request('11', override))
+      end
+
+      public
+      def get_commanded_secondary_air_status(override = false)
+        @parser.parse_commanded_secondary_air_status(request('12', override))
+      end
+
     end
 
 
-
-
+    # noinspection RubyInstanceMethodNamingConvention
     class Parser < OBD::Parser
 
       public
@@ -196,6 +206,24 @@ module OBD
         a = Conversion.hex_to_dec(input.value[0..1])
         b = Conversion.hex_to_dec(input.value[2..3])
         ((256.00 * a + b) / 100.00).round(2)
+      end
+
+      public
+      def parse_throttle_position(input)
+        a = Conversion.hex_to_dec(input.value)
+        (a / 2.55).round(2)
+      end
+
+      public
+      def parse_commanded_secondary_air_status(input)
+        statuses = [
+            'Upstream',
+            'Downstream of catalytic converter',
+            'From the outside atmosphere or off',
+            'Pump commanded on for diagnostics'
+        ]
+        a = Conversion.hex_to_bin_rjust(input.value).reverse
+        (a.size != 4 || a.count('1') != 1) ? 'Invalid Status' : statuses[a.index('1')]
       end
 
     end
