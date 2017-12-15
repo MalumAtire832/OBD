@@ -72,6 +72,16 @@ module OBD
         @parser.parse_timing_advance(request('0E', override))
       end
 
+      public
+      def get_intake_air_temperature(override = false)
+        @parser.parse_intake_air_temperature(request('0F', override))
+      end
+
+      public
+      def get_maf_airflow_rate(override = false)
+        @parser.parse_maf_airflow_rate(request('10', override))
+      end
+
     end
 
 
@@ -173,6 +183,19 @@ module OBD
       def parse_timing_advance(input)
         a = Conversion.hex_to_dec(input.value)
         ((a / 2.00) - 64.00).round(2)
+      end
+
+      public
+      def parse_intake_air_temperature(input)
+        a = Conversion.hex_to_dec(input.value)
+        a - 40
+      end
+
+      public
+      def parse_maf_airflow_rate(input)
+        a = Conversion.hex_to_dec(input.value[0..1])
+        b = Conversion.hex_to_dec(input.value[2..3])
+        ((256.00 * a + b) / 100.00).round(2)
       end
 
     end

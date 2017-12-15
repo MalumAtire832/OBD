@@ -6,6 +6,7 @@ require 'spec_helper'
 RSpec.describe OBD::Mode_01::Controller do
 
   before do
+    # system("./obdsim -g Random")
     @settings = OBD::Connection::Settings::new($device, 9600, 8, 1, 0)
     @controller = OBD::Mode_01::Controller::new(@settings)
   end
@@ -118,7 +119,7 @@ RSpec.describe OBD::Mode_01::Controller do
   describe ".get_engine_rpm" do
 
     before do
-      @result = test_single_value(250) {@controller.get_engine_rpm}
+      @result = test_single_value(100) {@controller.get_engine_rpm}
       debug("LOW: #{@result[:LOW]}", 4)
       debug("HIGH: #{@result[:HIGH]}", 4)
     end
@@ -148,14 +149,44 @@ RSpec.describe OBD::Mode_01::Controller do
   describe ".get_timing_advance" do
 
     before do
-      @result = test_single_value(100) {@controller.get_timing_advance}
+      @result = test_single_value(50) {@controller.get_timing_advance}
       debug("LOW: #{@result[:LOW]}", 4)
       debug("HIGH: #{@result[:HIGH]}", 4)
     end
 
-    it "should range from 0 to 255 km/h." do
+    it "should range from -64 to 63.5 degrees before TDC." do
       expect(@result[:LOW]).to be >= -64
       expect(@result[:HIGH]).to be <= 63.5
+    end
+
+  end
+
+  describe ".get_intake_air_temperature" do
+
+    before do
+      @result = test_single_value(100) {@controller.get_intake_air_temperature}
+      debug("LOW: #{@result[:LOW]}", 4)
+      debug("HIGH: #{@result[:HIGH]}", 4)
+    end
+
+    it "should range from -40 to 215 degrees celsius." do
+      expect(@result[:LOW]).to be >= -40
+      expect(@result[:HIGH]).to be <= 215
+    end
+
+  end
+
+  describe ".get_maf_airflow_rate" do
+
+    before do
+      @result = test_single_value(150) {@controller.get_maf_airflow_rate}
+      debug("LOW: #{@result[:LOW]}", 4)
+      debug("HIGH: #{@result[:HIGH]}", 4)
+    end
+
+    it "should range from 0 to 655.35 grams/sec." do
+      expect(@result[:LOW]).to be >= 0
+      expect(@result[:HIGH]).to be <= 655.35
     end
 
   end
