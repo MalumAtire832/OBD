@@ -224,4 +224,77 @@ RSpec.describe OBD::Mode_01::Controller do
 
   end
 
+  describe ".get_oxygen_sensors_present" do
+
+    before do
+      #ToDo: This should test more than one return value.
+      @result = @controller.get_oxygen_sensors_present
+    end
+
+    context "the method returns a hash with banks, which contain sensors." do
+
+      it "the hash should have 2 'banks'." do
+        expect(@result.keys.count).to eq 2
+      end
+
+      it "each bank should have 4 'sensors'." do
+        @result.keys.each do |bank|
+          expect(@result[bank].keys.count).to eq 4
+        end
+      end
+
+      it "each sensor should be either 'true' or 'false'." do
+        @result.keys.each do |bank|
+          @result[bank].keys.each do |sensor|
+            expect(@result[bank][sensor]).to be(true).or be(false)
+          end
+        end
+      end
+
+    end
+
+  end
+
+  describe ".get_oxygen_sensors_status" do
+
+    before do
+      #ToDo: This should test more than one return value.
+      @result = @controller.get_oxygen_sensors_status
+    end
+
+    context "the method returns a hash with 'sensors'." do
+
+      it "the hash should have 8 'sensors'." do
+        expect(@result.keys.count).to eq 8
+      end
+
+      it "each 'sensor' should have 2 values." do
+        @result.keys.each do |sensor|
+          expect(@result[sensor].keys.count).to eq 2
+        end
+      end
+
+      it "each sensors 'VOLTAGE' should be between 0 and 1.275 Volts." do
+        @result.keys.each do |sensor|
+          expect(@result[sensor][:VOLTAGE]).to be >= 0
+          expect(@result[sensor][:VOLTAGE]).to be <= 1.275
+        end
+      end
+
+      it "each sensors 'Short Term Fuel Trim' should be between -100 and 99.2%, or 'Not used in trim calculation'." do
+        @result.keys.each do |sensor|
+          if sensor.is_a? String
+            expect(@result[sensor][:STFT]).to eq 'Not used in trim calculation'
+          else
+            expect(@result[sensor][:STFT]).to be >= -100
+            expect(@result[sensor][:STFT]).to be <= 99.2
+          end
+        end
+      end
+
+    end
+
+  end
+
+
 end

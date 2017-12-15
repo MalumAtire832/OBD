@@ -93,6 +93,26 @@ module OBD
         @parser.parse_commanded_secondary_air_status(request('12', override))
       end
 
+      public
+      def get_oxygen_sensors_present(override = false)
+        @parser.parse_oxygen_sensors_present(request('13', override))
+      end
+
+      public
+      def get_oxygen_sensors_status(override = false)
+        #ToDo: Incorperate the present sensors into this with a check?
+        {
+            :SENSOR_1 => @parser.parse_oxygen_sensor_status(request('14', override)),
+            :SENSOR_2 => @parser.parse_oxygen_sensor_status(request('15', override)),
+            :SENSOR_3 => @parser.parse_oxygen_sensor_status(request('16', override)),
+            :SENSOR_4 => @parser.parse_oxygen_sensor_status(request('17', override)),
+            :SENSOR_5 => @parser.parse_oxygen_sensor_status(request('18', override)),
+            :SENSOR_6 => @parser.parse_oxygen_sensor_status(request('19', override)),
+            :SENSOR_7 => @parser.parse_oxygen_sensor_status(request('1A', override)),
+            :SENSOR_8 => @parser.parse_oxygen_sensor_status(request('1B', override)),
+        }
+      end
+
     end
 
 
@@ -224,6 +244,43 @@ module OBD
         ]
         a = Conversion.hex_to_bin_rjust(input.value).reverse
         (a.size != 4 || a.count('1') != 1) ? 'Invalid Status' : statuses[a.index('1')]
+      end
+
+      public
+      def parse_oxygen_sensors_present(input)
+        #ToDo: Should this raise an error when the binary string is shorter or longer than 8 bits?
+        a = Conversion.hex_to_bin_rjust(input.value).reverse
+        {
+            :BANK_1 => {
+                :SENSOR_1 => (a[0] == '1'),
+                :SENSOR_2 => (a[1] == '1'),
+                :SENSOR_3 => (a[2] == '1'),
+                :SENSOR_4 => (a[3] == '1')
+            },
+            :BANK_2 => {
+                :SENSOR_5 => (a[4] == '1'),
+                :SENSOR_6 => (a[5] == '1'),
+                :SENSOR_7 => (a[6] == '1'),
+                :SENSOR_8 => (a[7] == '1')
+            }
+        }
+      end
+
+      public
+      def parse_oxygen_sensor_status(input)
+
+        a = Conversion.hex_to_dec(input.value[0..1])
+        b = Conversion.hex_to_dec(input.value[2..3])
+        detect = Proc::new do |x|
+          if x == 'FF'
+            #ToDo does: "(if B==$FF, sensor is not used in trim calculation)" mean that STFT should be this? Or should B not be used in the equation.
+            'Not used in trim calculation.'
+          else
+            (((100.00/128.00) * b) - 100.00).round(1)
+          end
+        end
+
+        { :VOLTAGE => (a / 200.000).round(3), :STFT => detect.call(input.value[2..3])}
       end
 
     end
