@@ -5,10 +5,14 @@ require 'spec_helper'
 
 RSpec.describe OBD::Mode_01::Controller do
 
+
+
   before do
     @settings = OBD::Connection::Settings::new($device, 9600, 8, 1, 0)
     @controller = OBD::Mode_01::Controller::new(@settings)
   end
+
+
 
   describe ".get_fuel_system_status" do
 
@@ -39,6 +43,8 @@ RSpec.describe OBD::Mode_01::Controller do
 
   end
 
+
+
   describe ".get_engine_load" do
 
     before do
@@ -54,6 +60,8 @@ RSpec.describe OBD::Mode_01::Controller do
 
   end
 
+
+
   describe ".get_engine_coolant_temp" do
 
     before do
@@ -68,6 +76,8 @@ RSpec.describe OBD::Mode_01::Controller do
     end
 
   end
+
+
 
   describe ".get_fuel_trim" do
 
@@ -85,6 +95,8 @@ RSpec.describe OBD::Mode_01::Controller do
 
   end
 
+
+
   describe ".get_fuel_pressure" do
 
     before do
@@ -99,6 +111,8 @@ RSpec.describe OBD::Mode_01::Controller do
     end
 
   end
+
+
 
   describe ".get_intake_manifold_pressure" do
 
@@ -115,6 +129,8 @@ RSpec.describe OBD::Mode_01::Controller do
 
   end
 
+
+
   describe ".get_engine_rpm" do
 
     before do
@@ -129,6 +145,8 @@ RSpec.describe OBD::Mode_01::Controller do
     end
 
   end
+
+
 
   describe ".get_vehicle_speed" do
 
@@ -145,6 +163,8 @@ RSpec.describe OBD::Mode_01::Controller do
 
   end
 
+
+
   describe ".get_timing_advance" do
 
     before do
@@ -159,6 +179,8 @@ RSpec.describe OBD::Mode_01::Controller do
     end
 
   end
+
+
 
   describe ".get_intake_air_temperature" do
 
@@ -175,6 +197,8 @@ RSpec.describe OBD::Mode_01::Controller do
 
   end
 
+
+
   describe ".get_maf_airflow_rate" do
 
     before do
@@ -190,6 +214,8 @@ RSpec.describe OBD::Mode_01::Controller do
 
   end
 
+
+
   describe ".get_throttle_position" do
 
     before do
@@ -204,6 +230,8 @@ RSpec.describe OBD::Mode_01::Controller do
     end
 
   end
+
+
 
   describe ".get_commanded_secondary_air_status" do
 
@@ -223,6 +251,8 @@ RSpec.describe OBD::Mode_01::Controller do
     end
 
   end
+
+
 
   describe ".get_oxygen_sensors_present_2banks" do
 
@@ -254,6 +284,8 @@ RSpec.describe OBD::Mode_01::Controller do
     end
 
   end
+
+
 
   describe ".get_oxygen_sensors_status" do
 
@@ -294,6 +326,8 @@ RSpec.describe OBD::Mode_01::Controller do
     end
 
   end
+
+
 
   describe ".get_conformed_obd_standard" do
 
@@ -350,6 +384,8 @@ RSpec.describe OBD::Mode_01::Controller do
 
   end
 
+
+
   describe ".get_oxygen_sensors_present_4banks" do
 
     before do
@@ -376,7 +412,20 @@ RSpec.describe OBD::Mode_01::Controller do
           end
         end
       end
+    end
 
+  end
+
+
+
+  describe ".get_auxiliary_input_status" do
+
+    before do
+      @result = test_array_value(10) {@controller.get_auxiliary_input_status[:PTO]}
+    end
+
+    it "should be either 'true' or 'false'" do
+      @result.each {|x| expect(x).to be(true).or be(false)}
     end
 
   end

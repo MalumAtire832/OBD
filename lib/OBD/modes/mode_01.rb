@@ -123,6 +123,11 @@ module OBD
         @parser.parse_oxygen_sensors_present_4banks(request('1D', override))
       end
 
+      public
+      def get_auxiliary_input_status(override = false)
+        @parser.parse_auxiliary_input_status(request('1E', override))
+      end
+
     end
 
 
@@ -366,6 +371,14 @@ module OBD
                 :SENSOR_5 => (a[6] == '1'),
                 :SENSOR_6 => (a[7] == '1')
             }
+        }
+      end
+
+      public
+      def parse_auxiliary_input_status(input)
+        a = Conversion.hex_to_bin_rjust(input.value).reverse
+        {
+            :PTO => (a[0] == '1')
         }
       end
 
