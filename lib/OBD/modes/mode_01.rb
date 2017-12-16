@@ -113,6 +113,11 @@ module OBD
         }
       end
 
+      public
+      def get_conformed_obd_standard(override = false)
+        @parser.parse_conformed_obd_standard(request('1C', override))
+      end
+
     end
 
 
@@ -268,7 +273,6 @@ module OBD
 
       public
       def parse_oxygen_sensor_status(input)
-
         a = Conversion.hex_to_dec(input.value[0..1])
         b = Conversion.hex_to_dec(input.value[2..3])
         detect = Proc::new do |x|
@@ -276,11 +280,64 @@ module OBD
             #ToDo does: "(if B==$FF, sensor is not used in trim calculation)" mean that STFT should be this? Or should B not be used in the equation.
             'Not used in trim calculation.'
           else
-            (((100.00/128.00) * b) - 100.00).round(1)
+            (((100.0/128.0) * b) - 100.0).round(1)
           end
         end
 
         { :VOLTAGE => (a / 200.000).round(3), :STFT => detect.call(input.value[2..3])}
+      end
+
+      public
+      def parse_conformed_obd_standard(input)
+        # <editor-fold desc="OBD Standards descriptions.">
+        statuses = [
+            'OBD-II as defined by the CARB',
+            'OBD as defined by the EPA',
+            'OBD and OBD-II',
+            'OBD-I',
+            'Not OBD compliant',
+            'EOBD (Europe)',
+            'EOBD and OBD-II',
+            'EOBD and OBD',
+            'EOBD, OBD and OBD II',
+            'JOBD (Japan)',
+            'JOBD and OBD II',
+            'JOBD and EOBD',
+            'JOBD, EOBD, and OBD II',
+            'Reserved',
+            'Reserved',
+            'Reserved',
+            'Engine Manufacturer Diagnostics (EMD)',
+            'Engine Manufacturer Diagnostics Enhanced (EMD+)',
+            'Heavy Duty On-Board Diagnostics (Child/Partial) (HD OBD-C)',
+            'Heavy Duty On-Board Diagnostics (HD OBD)',
+            'World Wide Harmonized OBD (WWH OBD)',
+            'Reserved',
+            'Heavy Duty Euro OBD Stage I without NOx control (HD EOBD-I)',
+            'Heavy Duty Euro OBD Stage I with NOx control (HD EOBD-I N)',
+            'Heavy Duty Euro OBD Stage II without NOx control (HD EOBD-II)',
+            'Heavy Duty Euro OBD Stage II with NOx control (HD EOBD-II N)',
+            'Reserved',
+            'Brazil OBD Phase 1 (OBDBr-1)',
+            'Brazil OBD Phase 2 (OBDBr-2)',
+            'Korean OBD (KOBD)',
+            'India OBD I (IOBD I)',
+            'India OBD II (IOBD II)',
+            'Heavy Duty Euro OBD Stage VI (HD EOBD-IV)'
+        ]
+        # </editor-fold>
+        a = Conversion.hex_to_dec(input.value)
+
+        case a
+          when a == 0 || a > 255 # Not in the range of valid statuses.
+            'Invalid Status'
+          when 34..250 # Reserved range.
+            'Reserved'
+          when 251..255 # Special meaning for SAE J1939 standard.
+            'Not available for assignment'
+          else # Is in the valid range.
+            statuses[(a - 1)]
+        end
       end
 
     end

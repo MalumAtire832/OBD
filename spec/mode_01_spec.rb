@@ -291,7 +291,61 @@ RSpec.describe OBD::Mode_01::Controller do
           end
         end
       end
+    end
 
+  end
+
+  describe ".get_conformed_obd_standard" do
+
+    before do
+      #ToDo: This should test more than one return value.
+      @result = test_array_value(100) {@controller.get_conformed_obd_standard}
+      @statuses = # <editor-fold desc="OBD Standards descriptions.">
+          [
+              'OBD-II as defined by the CARB',
+              'OBD as defined by the EPA',
+              'OBD and OBD-II',
+              'OBD-I',
+              'Not OBD compliant',
+              'EOBD (Europe)',
+              'EOBD and OBD-II',
+              'EOBD and OBD',
+              'EOBD, OBD and OBD II',
+              'JOBD (Japan)',
+              'JOBD and OBD II',
+              'JOBD and EOBD',
+              'JOBD, EOBD, and OBD II',
+              'Reserved',
+              'Reserved',
+              'Reserved',
+              'Engine Manufacturer Diagnostics (EMD)',
+              'Engine Manufacturer Diagnostics Enhanced (EMD+)',
+              'Heavy Duty On-Board Diagnostics (Child/Partial) (HD OBD-C)',
+              'Heavy Duty On-Board Diagnostics (HD OBD)',
+              'World Wide Harmonized OBD (WWH OBD)',
+              'Reserved',
+              'Heavy Duty Euro OBD Stage I without NOx control (HD EOBD-I)',
+              'Heavy Duty Euro OBD Stage I with NOx control (HD EOBD-I N)',
+              'Heavy Duty Euro OBD Stage II without NOx control (HD EOBD-II)',
+              'Heavy Duty Euro OBD Stage II with NOx control (HD EOBD-II N)',
+              'Reserved',
+              'Brazil OBD Phase 1 (OBDBr-1)',
+              'Brazil OBD Phase 2 (OBDBr-2)',
+              'Korean OBD (KOBD)',
+              'India OBD I (IOBD I)',
+              'India OBD II (IOBD II)',
+              'Heavy Duty Euro OBD Stage VI (HD EOBD-IV)',
+
+              # Other values
+              'Invalid Status',
+              'Reserved',
+              'Not available for assignment'
+          ]
+      # </editor-fold>
+    end
+
+    it "should only have values from a predetermined list," do
+      @result.each {|x| expect(@statuses).to include(x)}
     end
 
   end
