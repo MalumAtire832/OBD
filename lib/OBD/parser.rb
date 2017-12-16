@@ -9,7 +9,7 @@ module OBD
     def parse_supported_pids(pids)
       count, result = 0, {}
       pids.each do |hex_string|
-        if ['NO DATA', '?', ''].include?(hex_string)
+        if !has_data?(hex_string)
           count.upto(count+31) do
             count+=1
             result[Conversion.dec_to_hex(count)] = false
@@ -25,6 +25,16 @@ module OBD
         end
       end
       return result
+    end
+
+    public
+    def has_data?(data)
+      !['NO DATA', 'NONE', '?', ''].include?(data)
+    end
+
+    public
+    def raise_if_no_data(data, parameter)
+      raise OBD::ParameterError.nodata(parameter, data) unless has_data?(data)
     end
 
   end

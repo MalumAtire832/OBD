@@ -25,6 +25,11 @@ module OBD
       OBD::ParameterError::new(msg="Parameter '#{parameter}' should not contain '#{contains}'")
     end
 
+    public
+    def self.nodata(parameter, actual)
+      OBD::ParameterError::new(msg="Parameter '#{parameter}' contains no data, value is: '#{actual}'")
+    end
+
   end
 
   class PidError < OBD::Error

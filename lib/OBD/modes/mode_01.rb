@@ -141,6 +141,7 @@ module OBD
 
       public
       def parse_status_since_dtcc(input)
+        raise_if_no_data(input.value, 'input.value')
         ctb = Proc::new {|i| Conversion.hex_to_bin_rjust(i).reverse} # Convert To Binary
         a, b, c, d = input.value[0..1], input.value[2..3], input.value[4..5], input.value[6..7]
         a_binary, b_binary, c_binary, d_binary = ctb.call(a), ctb.call(b), ctb.call(c), ctb.call(d)
@@ -166,6 +167,7 @@ module OBD
 
       public
       def parse_fuel_system_status(input)
+        raise_if_no_data(input.value, 'input.value')
         statuses = [
             'Open loop due to insufficient engine temperature',
             'Closed loop, using oxygen sensor feedback to determine fuel mix',
@@ -189,6 +191,7 @@ module OBD
 
       public
       def parse_engine_load(input)
+        raise_if_no_data(input.value, 'input.value')
         #FixMe: [0..1] OR [2..3]???
         a = Conversion.hex_to_dec(input.value[0..1])
         (a / 2.55).round(2)
@@ -196,29 +199,34 @@ module OBD
 
       public
       def parser_engine_coolant_temp(input)
+        raise_if_no_data(input.value, 'input.value')
         a = Conversion.hex_to_dec(input.value)
         a - 40
       end
 
       public
       def parse_fuel_trim(input)
+        raise_if_no_data(input.value, 'input.value')
         a = Conversion.hex_to_dec(input.value)
         (a / 1.28 - 100).round(1)
       end
 
       public
       def parse_fuel_pressure(input)
+        raise_if_no_data(input.value, 'input.value')
         a = Conversion.hex_to_dec(input.value)
         a * 3
       end
 
       public
       def parse_intake_manifold_pressure(input)
+        raise_if_no_data(input.value, 'input.value')
         Conversion.hex_to_dec(input.value)
       end
 
       public
       def parse_engine_rpm(input)
+        raise_if_no_data(input.value, 'input.value')
         a = Conversion.hex_to_dec(input.value[0..1])
         b = Conversion.hex_to_dec(input.value[2..3])
         ((256.00 * a + b) / 4.00).round(2)
@@ -226,23 +234,27 @@ module OBD
 
       public
       def parse_vehicle_speed(input)
+        raise_if_no_data(input.value, 'input.value')
         Conversion.hex_to_dec(input.value)
       end
 
       public
       def parse_timing_advance(input)
+        raise_if_no_data(input.value, 'input.value')
         a = Conversion.hex_to_dec(input.value)
         ((a / 2.00) - 64.00).round(2)
       end
 
       public
       def parse_intake_air_temperature(input)
+        raise_if_no_data(input.value, 'input.value')
         a = Conversion.hex_to_dec(input.value)
         a - 40
       end
 
       public
       def parse_maf_airflow_rate(input)
+        raise_if_no_data(input.value, 'input.value')
         a = Conversion.hex_to_dec(input.value[0..1])
         b = Conversion.hex_to_dec(input.value[2..3])
         ((256.00 * a + b) / 100.00).round(2)
@@ -250,12 +262,14 @@ module OBD
 
       public
       def parse_throttle_position(input)
+        raise_if_no_data(input.value, 'input.value')
         a = Conversion.hex_to_dec(input.value)
         (a / 2.55).round(2)
       end
 
       public
       def parse_commanded_secondary_air_status(input)
+        raise_if_no_data(input.value, 'input.value')
         statuses = [
             'Upstream',
             'Downstream of catalytic converter',
@@ -268,6 +282,7 @@ module OBD
 
       public
       def parse_oxygen_sensors_present_2banks(input)
+        raise_if_no_data(input.value, 'input.value')
         #ToDo: Should this raise an error when the binary string is shorter or longer than 8 bits?
         a = Conversion.hex_to_bin_rjust(input.value).reverse
         {
@@ -288,6 +303,7 @@ module OBD
 
       public
       def parse_oxygen_sensor_status(input)
+        raise_if_no_data(input.value, 'input.value')
         a = Conversion.hex_to_dec(input.value[0..1])
         b = Conversion.hex_to_dec(input.value[2..3])
         detect = Proc::new do |x|
@@ -304,6 +320,7 @@ module OBD
 
       public
       def parse_conformed_obd_standard(input)
+        raise_if_no_data(input.value, 'input.value')
         # <editor-fold desc="OBD Standards descriptions.">
         statuses = [
             'OBD-II as defined by the CARB',
@@ -357,6 +374,7 @@ module OBD
 
       public
       def parse_oxygen_sensors_present_4banks(input)
+        raise_if_no_data(input.value, 'input.value')
         #ToDo: Should this raise an error when the binary string is shorter or longer than 8 bits?
         a = Conversion.hex_to_bin_rjust(input.value).reverse
         {
@@ -381,12 +399,14 @@ module OBD
 
       public
       def parse_auxiliary_input_status(input)
+        raise_if_no_data(input.value, 'input.value')
         a = Conversion.hex_to_bin_rjust(input.value).reverse
         { :PTO => (a[0] == '1') }
       end
 
       public
       def parse_time_since_engine_start(input)
+        raise_if_no_data(input.value, 'input.value')
         a = Conversion.hex_to_dec(input.value[0..1])
         b = Conversion.hex_to_dec(input.value[2..3])
         (256 * a + b)
