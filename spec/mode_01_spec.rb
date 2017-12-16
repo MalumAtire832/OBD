@@ -224,11 +224,11 @@ RSpec.describe OBD::Mode_01::Controller do
 
   end
 
-  describe ".get_oxygen_sensors_present" do
+  describe ".get_oxygen_sensors_present_2banks" do
 
     before do
       #ToDo: This should test more than one return value.
-      @result = @controller.get_oxygen_sensors_present
+      @result = @controller.get_oxygen_sensors_present_2banks
     end
 
     context "the method returns a hash with banks, which contain sensors." do
@@ -346,6 +346,37 @@ RSpec.describe OBD::Mode_01::Controller do
 
     it "should only have values from a predetermined list," do
       @result.each {|x| expect(@statuses).to include(x)}
+    end
+
+  end
+
+  describe ".get_oxygen_sensors_present_4banks" do
+
+    before do
+      #ToDo: This should test more than one return value.
+      @result = @controller.get_oxygen_sensors_present_4banks
+    end
+
+    context "the method returns a hash with 'banks', which contain sensors." do
+
+      it "the hash should have 4 'banks'." do
+        expect(@result.keys.count).to eq 4
+      end
+
+      it "each 'bank' should have 2 'sensors'." do
+        @result.keys.each do |bank|
+          expect(@result[bank].keys.count).to eq 2
+        end
+      end
+
+      it "each 'sensor' should be either 'true' or 'false'." do
+        @result.keys.each do |bank|
+          @result[bank].keys.each do |sensor|
+            expect(@result[bank][sensor]).to be(true).or be(false)
+          end
+        end
+      end
+
     end
 
   end

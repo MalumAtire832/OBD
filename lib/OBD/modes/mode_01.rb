@@ -94,8 +94,8 @@ module OBD
       end
 
       public
-      def get_oxygen_sensors_present(override = false)
-        @parser.parse_oxygen_sensors_present(request('13', override))
+      def get_oxygen_sensors_present_2banks(override = false)
+        @parser.parse_oxygen_sensors_present_2banks(request('13', override))
       end
 
       public
@@ -116,6 +116,11 @@ module OBD
       public
       def get_conformed_obd_standard(override = false)
         @parser.parse_conformed_obd_standard(request('1C', override))
+      end
+
+      public
+      def get_oxygen_sensors_present_4banks(override = false)
+        @parser.parse_oxygen_sensors_present_4banks(request('1D', override))
       end
 
     end
@@ -252,7 +257,7 @@ module OBD
       end
 
       public
-      def parse_oxygen_sensors_present(input)
+      def parse_oxygen_sensors_present_2banks(input)
         #ToDo: Should this raise an error when the binary string is shorter or longer than 8 bits?
         a = Conversion.hex_to_bin_rjust(input.value).reverse
         {
@@ -338,6 +343,30 @@ module OBD
           else # Is in the valid range.
             statuses[(a - 1)]
         end
+      end
+
+      public
+      def parse_oxygen_sensors_present_4banks(input)
+        #ToDo: Should this raise an error when the binary string is shorter or longer than 8 bits?
+        a = Conversion.hex_to_bin_rjust(input.value).reverse
+        {
+            :BANK_1 => {
+                :SENSOR_1 => (a[0] == '1'),
+                :SENSOR_2 => (a[1] == '1')
+            },
+            :BANK_2 => {
+                :SENSOR_5 => (a[2] == '1'),
+                :SENSOR_6 => (a[3] == '1')
+            },
+            :BANK_3 => {
+                :SENSOR_5 => (a[4] == '1'),
+                :SENSOR_6 => (a[5] == '1')
+            },
+            :BANK_4 => {
+                :SENSOR_5 => (a[6] == '1'),
+                :SENSOR_6 => (a[7] == '1')
+            }
+        }
       end
 
     end
