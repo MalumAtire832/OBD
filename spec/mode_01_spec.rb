@@ -431,4 +431,20 @@ RSpec.describe OBD::Mode_01::Controller do
   end
 
 
+
+  describe ".get_time_since_engine_start" do
+
+    before do
+      @result = test_single_value(250) {@controller.get_time_since_engine_start}
+      debug("LOW: #{@result[:LOW]}", 4)
+      debug("HIGH: #{@result[:HIGH]}", 4)
+    end
+
+    it "should range from 0 to 65535" do
+      expect(@result[:LOW]).to be >= 0
+      expect(@result[:HIGH]).to be <= 65535
+    end
+
+  end
+
 end

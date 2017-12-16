@@ -128,6 +128,11 @@ module OBD
         @parser.parse_auxiliary_input_status(request('1E', override))
       end
 
+      public
+      def get_time_since_engine_start(override = false)
+        @parser.parse_time_since_engine_start(request('1F', override))
+      end
+
     end
 
 
@@ -377,9 +382,14 @@ module OBD
       public
       def parse_auxiliary_input_status(input)
         a = Conversion.hex_to_bin_rjust(input.value).reverse
-        {
-            :PTO => (a[0] == '1')
-        }
+        { :PTO => (a[0] == '1') }
+      end
+
+      public
+      def parse_time_since_engine_start(input)
+        a = Conversion.hex_to_dec(input.value[0..1])
+        b = Conversion.hex_to_dec(input.value[2..3])
+        (256 * a + b)
       end
 
     end
