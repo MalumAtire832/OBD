@@ -5,9 +5,9 @@ module OBD
     attr_reader :code, :indexes
     attr_accessor :supported_pids
 
-    SUPPORTED = 10
-    NOT_SUPPORTED = 00
-    MISSING = 01
+    SUPPORTED ||= 10
+    NOT_SUPPORTED ||= 00
+    MISSING ||= 01
 
     public
     def initialize(code, indexes)

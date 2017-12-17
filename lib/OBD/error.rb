@@ -2,9 +2,8 @@ module OBD
 
   class Error < StandardError
 
-    private
     def initialize(msg)
-      @msg = msg
+      super(msg)
     end
 
   end
@@ -26,20 +25,25 @@ module OBD
       OBD::ParameterError::new(msg="Parameter '#{parameter}' should not contain '#{contains}'")
     end
 
+    public
+    def self.nodata(parameter, actual)
+      OBD::ParameterError::new(msg="Parameter '#{parameter}' contains no data, value is: '#{actual}'")
+    end
+
   end
 
   class PidError < OBD::Error
 
     public
     def self.unsupported(pid, mode='')
-      msg = (mode == '' ? "PID '#{pid}' is not supported." : "PID '#{pid}' is not supported for mode '#{mode}'")
-      OBD::PidError::new(msg)
+      message = (mode == '' ? "PID '#{pid}' is not supported." : "PID '#{pid}' is not supported for mode '#{mode}'")
+      OBD::PidError::new(msg=message)
     end
 
     public
     def self.missing(pid, mode='')
-      msg = (mode == '' ? "PID '#{pid}' is missing." : "PID '#{pid}' is missing for mode '#{mode}'")
-      OBD::PidError::new(msg)
+      message = (mode == '' ? "PID '#{pid}' is missing." : "PID '#{pid}' is missing for mode '#{mode}'")
+      OBD::PidError::new(msg=message)
     end
 
   end
