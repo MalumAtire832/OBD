@@ -136,6 +136,14 @@ module OBD
     end
 
 
+
+
+
+
+
+
+
+
     # noinspection RubyInstanceMethodNamingConvention
     class Parser < OBD::Parser
 
