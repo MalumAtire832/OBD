@@ -7,7 +7,7 @@ RSpec.describe OBD::Mode_01::Controller do
 
 
 
-  before do
+  before(:all) do
     @settings = OBD::Connection::Settings::new($device, 9600, 8, 1, 0)
     @controller = OBD::Mode_01::Controller::new(@settings)
   end
@@ -49,8 +49,10 @@ RSpec.describe OBD::Mode_01::Controller do
 
     before do
       @result = test_single_value(100) {@controller.get_engine_load}
-      debug("LOW: #{@result[:LOW]}", 4)
-      debug("HIGH: #{@result[:HIGH]}", 4)
+      if ENV["DEBUG"] == "1"
+        debug("LOW: #{@result[:LOW]}", 4)
+        debug("HIGH: #{@result[:HIGH]}", 4)
+      end
     end
 
     it "should range from 0-100%" do
@@ -66,8 +68,10 @@ RSpec.describe OBD::Mode_01::Controller do
 
     before do
       @result = test_single_value(100) {@controller.get_engine_coolant_temp}
-      debug("LOW: #{@result[:LOW]}", 4)
-      debug("HIGH: #{@result[:HIGH]}", 4)
+      if ENV["DEBUG"] == "1"
+        debug("LOW: #{@result[:LOW]}", 4)
+        debug("HIGH: #{@result[:HIGH]}", 4)
+      end
     end
 
     it "should range from -40 to 215 degrees celsius." do
@@ -83,8 +87,10 @@ RSpec.describe OBD::Mode_01::Controller do
 
     before do
       @result = test_multiple_values(100) {@controller.get_fuel_trim}
-      @result.each_key {|key| debug("#{key}: #{@result[key]}", 4)}
-    end
+      if ENV["DEBUG"] == "1"
+        @result.each_key {|key| debug("#{key}: #{@result[key]}", 4)}
+     end
+      end
 
     it "should range from -100 to 99.2%" do
       @result.each_key do |key|
@@ -100,9 +106,11 @@ RSpec.describe OBD::Mode_01::Controller do
   describe ".get_fuel_pressure" do
 
     before do
-      @result = test_single_value(250) {@controller.get_fuel_pressure}
-      debug("LOW: #{@result[:LOW]}", 4)
-      debug("HIGH: #{@result[:HIGH]}", 4)
+      @result = test_single_value(100) {@controller.get_fuel_pressure}
+      if ENV["DEBUG"] == "1"
+        debug("LOW: #{@result[:LOW]}", 4)
+        debug("HIGH: #{@result[:HIGH]}", 4)
+      end
     end
 
     it "should range from 0 to 765 kPa." do
@@ -118,8 +126,10 @@ RSpec.describe OBD::Mode_01::Controller do
 
     before do
       @result = test_single_value(100) {@controller.get_intake_manifold_pressure}
-      debug("LOW: #{@result[:LOW]}", 4)
-      debug("HIGH: #{@result[:HIGH]}", 4)
+      if ENV["DEBUG"] == "1"
+        debug("LOW: #{@result[:LOW]}", 4)
+        debug("HIGH: #{@result[:HIGH]}", 4)
+      end
     end
 
     it "should range from 0 to 255 kPa." do
@@ -135,8 +145,10 @@ RSpec.describe OBD::Mode_01::Controller do
 
     before do
       @result = test_single_value(100) {@controller.get_engine_rpm}
-      debug("LOW: #{@result[:LOW]}", 4)
-      debug("HIGH: #{@result[:HIGH]}", 4)
+      if ENV["DEBUG"] == "1"
+        debug("LOW: #{@result[:LOW]}", 4)
+        debug("HIGH: #{@result[:HIGH]}", 4)
+      end
     end
 
     it "should range from 0 to 16,383.75 RPM." do
@@ -152,8 +164,10 @@ RSpec.describe OBD::Mode_01::Controller do
 
     before do
       @result = test_single_value(100) {@controller.get_vehicle_speed}
-      debug("LOW: #{@result[:LOW]}", 4)
-      debug("HIGH: #{@result[:HIGH]}", 4)
+      if ENV["DEBUG"] == "1"
+        debug("LOW: #{@result[:LOW]}", 4)
+        debug("HIGH: #{@result[:HIGH]}", 4)
+      end
     end
 
     it "should range from 0 to 255 km/h." do
@@ -169,8 +183,10 @@ RSpec.describe OBD::Mode_01::Controller do
 
     before do
       @result = test_single_value(50) {@controller.get_timing_advance}
-      debug("LOW: #{@result[:LOW]}", 4)
-      debug("HIGH: #{@result[:HIGH]}", 4)
+      if ENV["DEBUG"] == "1"
+        debug("LOW: #{@result[:LOW]}", 4)
+        debug("HIGH: #{@result[:HIGH]}", 4)
+      end
     end
 
     it "should range from -64 to 63.5 degrees before TDC." do
@@ -186,8 +202,10 @@ RSpec.describe OBD::Mode_01::Controller do
 
     before do
       @result = test_single_value(100) {@controller.get_intake_air_temperature}
-      debug("LOW: #{@result[:LOW]}", 4)
-      debug("HIGH: #{@result[:HIGH]}", 4)
+      if ENV["DEBUG"] == "1"
+        debug("LOW: #{@result[:LOW]}", 4)
+        debug("HIGH: #{@result[:HIGH]}", 4)
+      end
     end
 
     it "should range from -40 to 215 degrees celsius." do
@@ -202,9 +220,11 @@ RSpec.describe OBD::Mode_01::Controller do
   describe ".get_maf_airflow_rate" do
 
     before do
-      @result = test_single_value(150) {@controller.get_maf_airflow_rate}
-      debug("LOW: #{@result[:LOW]}", 4)
-      debug("HIGH: #{@result[:HIGH]}", 4)
+      @result = test_single_value(100) {@controller.get_maf_airflow_rate}
+      if ENV["DEBUG"] == "1"
+        debug("LOW: #{@result[:LOW]}", 4)
+        debug("HIGH: #{@result[:HIGH]}", 4)
+      end
     end
 
     it "should range from 0 to 655.35 grams/sec." do
@@ -220,8 +240,10 @@ RSpec.describe OBD::Mode_01::Controller do
 
     before do
       @result = test_single_value(50) {@controller.get_throttle_position}
-      debug("LOW: #{@result[:LOW]}", 4)
-      debug("HIGH: #{@result[:HIGH]}", 4)
+      if ENV["DEBUG"] == "1"
+        debug("LOW: #{@result[:LOW]}", 4)
+        debug("HIGH: #{@result[:HIGH]}", 4)
+      end
     end
 
     it "should range from 0 to 100%" do
@@ -424,7 +446,7 @@ RSpec.describe OBD::Mode_01::Controller do
       @result = test_array_value(10) {@controller.get_auxiliary_input_status[:PTO]}
     end
 
-    it "should be either 'true' or 'false'" do
+    it "should be either 'true' or 'false'." do
       @result.each {|x| expect(x).to be(true).or be(false)}
     end
 
@@ -435,16 +457,91 @@ RSpec.describe OBD::Mode_01::Controller do
   describe ".get_time_since_engine_start" do
 
     before do
-      @result = test_single_value(250) {@controller.get_time_since_engine_start}
-      debug("LOW: #{@result[:LOW]}", 4)
-      debug("HIGH: #{@result[:HIGH]}", 4)
+      @result = test_single_value(100) {@controller.get_time_since_engine_start}
+      if ENV["DEBUG"] == "1"
+        debug("LOW: #{@result[:LOW]}", 4)
+        debug("HIGH: #{@result[:HIGH]}", 4)
+      end
     end
 
-    it "should range from 0 to 65535" do
+    it "should range from 0 to 65535 seconds." do
       expect(@result[:LOW]).to be >= 0
       expect(@result[:HIGH]).to be <= 65535
     end
 
   end
+
+
+
+  describe ".get_distance_traveled_with_MIL_on" do
+
+    before do
+      begin
+        @result = test_single_value(100) {@controller.get_distance_traveled_with_MIL_on}
+        if ENV["DEBUG"] == "1"
+          debug("LOW: #{@result[:LOW]}", 4)
+          debug("HIGH: #{@result[:HIGH]}", 4)
+        end
+      rescue OBD::PidError
+        skip("Unsupported PID")
+      end
+    end
+
+    it "should range from 0 to 65535 Km." do
+      expect(@result[:LOW]).to be >= 0
+      expect(@result[:HIGH]).to be <= 65535
+    end
+
+  end
+
+
+
+  describe ".get_fuel_rail_pressure" do
+
+    before do
+      begin
+        @result = test_single_value(100) {@controller.get_fuel_rail_pressure}
+        if ENV["DEBUG"] == "1"
+          debug("LOW: #{@result[:LOW]}", 4)
+          debug("HIGH: #{@result[:HIGH]}", 4)
+        end
+      rescue OBD::PidError
+        skip("Unsupported PID")
+      end
+    end
+
+    it "should range from 0 to 5177,265 kPa." do
+      expect(@result[:LOW]).to be >= 0
+      expect(@result[:HIGH]).to be <= 5177.265
+    end
+
+  end
+
+
+
+  describe ".get_fuel_rail_gauge_pressure" do
+
+    before do
+      begin
+        @result = test_single_value(100) {@controller.get_fuel_rail_gauge_pressure}
+        if ENV["DEBUG"] == "1"
+          debug("LOW: #{@result[:LOW]}", 4)
+          debug("HIGH: #{@result[:HIGH]}", 4)
+        end
+      rescue OBD::PidError
+        skip("Unsupported PID")
+      end
+    end
+
+    it "should range from 0 to 655350 kPa." do
+      expect(@result[:LOW]).to be >= 0
+      expect(@result[:HIGH]).to be <= 655350
+    end
+
+  end
+
+
+
+
 
 end

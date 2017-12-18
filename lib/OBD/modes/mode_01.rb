@@ -133,6 +133,21 @@ module OBD
         @parser.parse_time_since_engine_start(request('1F', override))
       end
 
+      public
+      def get_distance_traveled_with_MIL_on(override = false)
+        @parser.parse_distance_traveled_with_MIL_on(request('21', override))
+      end
+
+      public
+      def get_fuel_rail_pressure(override = false)
+        @parser.parse_fuel_rail_pressure(request('22', override))
+      end
+
+      public
+      def get_fuel_rail_gauge_pressure(override = false)
+        @parser.parse_fuel_rail_gauge_pressure(request('23', override))
+      end
+
     end
 
 
@@ -418,6 +433,30 @@ module OBD
         a = Conversion.hex_to_dec(input.value[0..1])
         b = Conversion.hex_to_dec(input.value[2..3])
         (256 * a + b)
+      end
+
+      public
+      def parse_distance_traveled_with_MIL_on(input)
+        raise_if_no_data(input.value, 'input.value')
+        a = Conversion.hex_to_dec(input.value[0..1])
+        b = Conversion.hex_to_dec(input.value[2..3])
+        (256 * a + b)
+      end
+
+      public
+      def parse_fuel_rail_pressure(input)
+        raise_if_no_data(input.value, 'input.value')
+        a = Conversion.hex_to_dec(input.value[0..1])
+        b = Conversion.hex_to_dec(input.value[2..3])
+        (256.00 * a + b) * 0.079
+      end
+
+      public
+      def parse_fuel_rail_gauge_pressure(input)
+        raise_if_no_data(input.value, 'input.value')
+        a = Conversion.hex_to_dec(input.value[0..1])
+        b = Conversion.hex_to_dec(input.value[2..3])
+        (256 * a + b) * 10
       end
 
     end
