@@ -37,6 +37,7 @@ Gem::Specification.new do |spec|
       'lib/OBD/error.rb',
       'lib/OBD/mode.rb',
       'lib/OBD/parser.rb',
+      'lib/OBD/requester.rb',
       'lib/OBD/modes/mode_01.rb',
   ]
   spec.bindir        = "exe"
@@ -49,4 +50,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "serialport", "~> 1.3"
   spec.add_development_dependency "yard", "~> 0.9.12"
   spec.add_development_dependency "awesome_print", "~> 1.8.0"
+
+  spec.add_runtime_dependency "serialport", "~> 1.3"
+  spec.add_runtime_dependency "awesome_print", "~> 1.8.0"
 end
