@@ -148,6 +148,23 @@ module OBD
         @parser.parse_fuel_rail_gauge_pressure(request('23', override))
       end
 
+      public
+      def get_oxygen_sensors_status_2(override = false)
+        pids, result = ['24', '25', '26', '27', '28', '29', '2A', '2B'], {}
+        (1..8).map do |i|
+          begin
+            result["SENSOR_#{i}".to_sym] = @parser.parse_oxygen_sensor_status_2(request(pids[i-1], override))
+          rescue OBD::PidError
+            result["SENSOR_#{i}".to_sym] = {:FUEL_AIR_RATIO => "Unsupported", :VOLTAGE => "Unsupported"}
+          end
+        end
+      end
+
+      public
+      def get_commanded_EGR(override = false)
+        @parser.parse_commanded_EGR(request('2C', override))
+      end
+
     end
 
 
@@ -457,6 +474,26 @@ module OBD
         a = Conversion.hex_to_dec(input.value[0..1])
         b = Conversion.hex_to_dec(input.value[2..3])
         (256 * a + b) * 10
+      end
+
+      public
+      def parse_oxygen_sensor_status_2(input) # ToDo: Needs a better name.
+        raise_if_no_data(input.value, 'input.value')
+        a = Conversion.hex_to_dec(input.value[0..1])
+        b = Conversion.hex_to_dec(input.value[2..3])
+        c = Conversion.hex_to_dec(input.value[4..5])
+        d = Conversion.hex_to_dec(input.value[6..7])
+        {
+            :FUEL_AIR_RATIO => (0.000030517578125 * (256 * a + b)).round(6), # (2/65536) * (256 * a + b)
+            :VOLTAGE        => (0.0001220703125 * (256 * c + d)).round(6)    # (8/65536) * (256 * c + d)
+        }
+      end
+
+      public
+      def parse_commanded_EGR(input)
+        raise_if_no_data(input.value, 'input.value')
+        a = Conversion.hex_to_dec(input.value)
+        ((100.00 / 255.00) * a).round(2)
       end
 
     end

@@ -337,8 +337,8 @@ RSpec.describe OBD::Mode_01::Controller do
 
       it "each sensors 'Short Term Fuel Trim' should be between -100 and 99.2%, or 'Not used in trim calculation'." do
         @result.keys.each do |sensor|
-          if sensor.is_a? String
-            expect(@result[sensor][:STFT]).to eq 'Not used in trim calculation'
+          if @result[sensor][:STFT].is_a? String
+            expect(@result[sensor][:STFT]).to eq 'Not used in trim calculation.'
           else
             expect(@result[sensor][:STFT]).to be >= -100
             expect(@result[sensor][:STFT]).to be <= 99.2
@@ -536,6 +536,75 @@ RSpec.describe OBD::Mode_01::Controller do
     it "should range from 0 to 655350 kPa." do
       expect(@result[:LOW]).to be >= 0
       expect(@result[:HIGH]).to be <= 655350
+    end
+
+  end
+
+
+
+  describe ".get_oxygen_sensors_status_2" do
+
+    before do
+      #ToDo: This should test more than one return value.
+      @result = @controller.get_oxygen_sensors_status_2
+    end
+
+    context "the method returns a hash with 'sensors'." do
+
+      it "the hash should have 8 'sensors'." do
+        expect(@result.count).to eq 8
+      end
+
+      it "each 'sensor' should have 2 values." do
+        @result.each do |sensor|
+          expect(sensor.keys.count).to eq 2
+        end
+      end
+
+      it "each sensors 'VOLTAGE' should be between 0 and < 8 Volts, or 'Unsupported'." do
+        @result.each do |sensor|
+          if sensor[:VOLTAGE].is_a? String
+            expect(sensor[:VOLTAGE]).to eq 'Unsupported'
+          else
+            expect(sensor[:VOLTAGE]).to be >= 0
+            expect(sensor[:VOLTAGE]).to be < 8
+          end
+        end
+      end
+
+      it "each sensors 'Fuel-Air Ratio' should be between 0 and < 2, or 'Unsupported'." do
+        @result.each do |sensor|
+          if sensor[:FUEL_AIR_RATIO].is_a? String
+            expect(sensor[:FUEL_AIR_RATIO]).to eq 'Unsupported'
+          else
+            expect(sensor[:FUEL_AIR_RATIO]).to be >= 0
+            expect(sensor[:FUEL_AIR_RATIO]).to be < 2
+          end
+        end
+      end
+    end
+
+  end
+
+
+
+  describe ".get_commanded_EGR" do
+
+    before do
+      begin
+        @result = test_single_value(50) {@controller.get_commanded_EGR}
+        if ENV["DEBUG"] == "1"
+          debug("LOW: #{@result[:LOW]}", 4)
+          debug("HIGH: #{@result[:HIGH]}", 4)
+        end
+      rescue OBD::PidError
+        skip("Unsupported PID")
+      end
+    end
+
+    it "should range from 0 to 100%." do
+      expect(@result[:LOW]).to be >= 0
+      expect(@result[:HIGH]).to be <= 100
     end
 
   end
