@@ -47,6 +47,11 @@ module OBD
       @mode.is_pid_supported?(pid)
     end
 
+    public
+    def get_settings
+      @connection.settings
+    end
+
   end
 
 end

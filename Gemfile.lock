@@ -2,6 +2,8 @@ PATH
   remote: .
   specs:
     OBD (0.1.02)
+      awesome_print (~> 1.8.0)
+      serialport (~> 1.3)
 
 GEM
   remote: https://rubygems.org/
@@ -38,4 +40,4 @@ DEPENDENCIES
   yard (~> 0.9.12)
 
 BUNDLED WITH
-   1.16.0
+   1.16.1

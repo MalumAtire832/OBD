@@ -6,19 +6,26 @@ module OBD
 
   class Connection
 
+    DEFAULT_SETTINGS = {
+        :baudrate => 9600,
+        :data_bits => 8,
+        :stop_bits => 1,
+        :parity_bits => 0,
+    }
+
     attr_reader :settings, :port
 
+    # noinspection RubyControlFlowConversionInspection
     public
-    def initialize(settings)
-      sh = settings.to_hash
-      sh.each_key {|k| raise OBD::ParameterError.mismatch("Settings:#{k}", "not nil", "#{sh[k]}") if sh[k].to_s.empty?}
-      @settings = settings
+    def initialize(settings = DEFAULT_SETTINGS)
+      raise OBD::ParameterError.missing("settings[:device]") if !__has_device?(settings)
+      @settings = __transform_settings(settings)
       @port = SerialPort::new(
-          settings.device,
-          settings.baudrate,
-          settings.data_bits,
-          settings.stop_bits,
-          settings.parity_bits,
+          @settings[:device],
+          @settings[:baudrate],
+          @settings[:data_bits],
+          @settings[:stop_bits],
+          @settings[:parity_bits]
       )
     end
 
@@ -32,33 +39,22 @@ module OBD
       @port.write(command)
     end
 
+    # noinspection RubyNestedTernaryOperatorsInspection
+    private
+    def __has_device?(settings)
+      device = settings[:device]
+      device.nil? ? false : (device.empty? ? false : true)
+    end
 
-
-
-    class Settings
-
-      attr_reader :device, :baudrate, :data_bits, :stop_bits, :parity_bits
-
-      public
-      def initialize(device, baudrate, data_bits, stop_bits, parity_bits)
-        @device = device
-        @baudrate = baudrate
-        @data_bits = data_bits
-        @stop_bits = stop_bits
-        @parity_bits = parity_bits
-      end
-
-      public
-      def to_hash
-        {
-            :device => @device,
-            :baudrate => @baudrate,
-            :data_bits => @data_bits,
-            :stop_bits => @stop_bits,
-            :parity_bits => @parity_bits,
-        }
-      end
-
+    private
+    def __transform_settings(settings)
+      {
+          :device      => settings[:device],
+          :baud_rate   => settings[:baudrate]    || DEFAULT_SETTINGS[:baudrate],
+          :data_bits   => settings[:data_bits]   || DEFAULT_SETTINGS[:data_bits],
+          :stop_bits   => settings[:stop_bits]   || DEFAULT_SETTINGS[:stop_bits],
+          :parity_bits => settings[:parity_bits] || DEFAULT_SETTINGS[:parity_bits]
+      }
     end
 
   end
