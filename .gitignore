@@ -6,7 +6,7 @@
 /pkg/
 /spec/reports/
 /tmp/
-/main.rb
+main.rb
 /.idea/
 .DS_Store
 # rspec failure tracking

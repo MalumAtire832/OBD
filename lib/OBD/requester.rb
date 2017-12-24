@@ -1,6 +1,6 @@
-require_relative '../obd/error'
-require_relative '../obd/conversion'
-require_relative '../obd/mode'
+require_relative 'error'
+require_relative 'conversion'
+require_relative 'mode'
 
 module OBD
 

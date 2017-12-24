@@ -37,19 +37,26 @@ require 'OBD'
 # 8 data bits, 
 # 1 stop bit, 
 # and 0 parity bits.
-settings = OBD::Connection::Settings::new("/dev/ttys001", 9600, 8, 1, 0)
+# The device is mandatory, the rest can be omitted and are set to the below default values. 
+settings = {
+  :device      => '/dev/ttys001',
+  :baud_rate   => 9600,
+  :data_bits   => 8,
+  :stop_bits   => 1,
+  :parity_bits => 0
+}
 
 # A Mode Controller for the mode with identifier '01'.
 # This controller executes each request.
-controller = OBD::Mode_01::Controller::new(settings)
+controller = OBD::Mode_01::Controller.new(settings)
 
 # The following methods return their values in a parsed format.
-standard = controller.get_conformed_obd_standard    # String identifier.
-ox_stat = controller.get_oxygen_sensors_status      # Hash -> See sources or API documentation.
-ox2 = controller.get_oxygen_sensors_present_2banks  # ^
-ox4 = controller.get_oxygen_sensors_present_4banks  # ^
-air_temp = controller.get_intake_air_temperature    # Degrees celsius
-speed = controller.get_vehicle_speed                # Km/h
+controller.get_conformed_obd_standard         # String identifier.
+controller.get_oxygen_sensors_status          # Hash -> See sources or API documentation.
+controller.get_oxygen_sensors_present_2banks  # ^
+controller.get_oxygen_sensors_present_4banks  # ^
+controller.get_intake_air_temperature         # Degrees celsius
+controller.get_vehicle_speed                  # Km/h
 ```
 
 It is also possible to do these requests manually.
@@ -62,10 +69,17 @@ require 'OBD'
 # 8 data bits, 
 # 1 stop bit, 
 # and 0 parity bits.
-settings = OBD::Connection::Settings::new("/dev/ttys001", 9600, 8, 1, 0)
+# The device is mandatory, the rest can be omitted and are set to the below default values. 
+settings = {
+  :device      => '/dev/ttys001',
+  :baud_rate   => 9600,
+  :data_bits   => 8,
+  :stop_bits   => 1,
+  :parity_bits => 0
+}
 
 # A mode to operate on, the mode number is '01' 
-# [followed by all the hex indexes where the supported pids are located](https://en.wikipedia.org/wiki/OBD-II_PIDs).
+# followed by all the hex indexes where the supported pids are located. [1]
 mode = OBD::Mode::new("01", ["00", "20", "40", "60", "80", "A0", "C0"])
 
 # The controller which executes each request.
@@ -75,6 +89,7 @@ controller = OBD::Controller::new(mode, settings)
 # Which returns a OBD::Requester::Result object with the raw Hexadecimal value.
 result = controller.request("0D")
 ```
+[1] [OBD-II Pids](https://en.wikipedia.org/wiki/OBD-II_PIDs)
 
 But you are of course not limited to these functions.
 If you want to build your own set of commands you can do it like this:
