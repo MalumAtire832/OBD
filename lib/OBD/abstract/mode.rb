@@ -6,17 +6,15 @@ module OBD
     attr_accessor :supported_pids
 
     SUPPORTED ||= 10
-    NOT_SUPPORTED ||= 00
     MISSING ||= 01
+    NOT_SUPPORTED ||= 00
 
-    public
     def initialize(code, indexes)
       @code = code
       @indexes = indexes
       @supported_pids = {}
     end
 
-    public
     # noinspection RubyNestedTernaryOperatorsInspection
     def is_pid_supported?(code)
       supported = @supported_pids[code]
@@ -30,13 +28,11 @@ module OBD
 
       attr_reader :code
 
-      public
       def initialize(code, supported)
         @code = code
         @supported = supported
       end
 
-      public
       def is_supported?
         @supported
       end

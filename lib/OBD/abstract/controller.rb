@@ -1,15 +1,12 @@
-require_relative 'connection'
-require_relative 'requester'
-require_relative 'mode'
-require_relative 'parser'
-require_relative 'conversion'
-require_relative 'error'
+require 'OBD/abstract/mode'
+require 'OBD/abstract/parser'
+require 'OBD/io/requester'
+require 'OBD/io/connection'
 
 module OBD
 
   class Controller
 
-    public
     def initialize(mode, settings)
       @mode = mode
       @connection = OBD::Connection::new(settings)
@@ -18,16 +15,6 @@ module OBD
       __marshall_mode
     end
 
-    private
-    def __marshall_mode
-      @mode.supported_pids = @parser.parse_supported_pids(
-                                  @requester.request_supported_pids(
-                                      @mode
-                                  )
-                              )
-    end
-
-    public
     def request(pid, override = false)
       supported = is_pid_supported?(pid)
       if supported[0]
@@ -42,14 +29,22 @@ module OBD
       end
     end
 
-    public
     def is_pid_supported?(pid)
       @mode.is_pid_supported?(pid)
     end
 
-    public
     def get_settings
       @connection.settings
+    end
+
+    private
+    def __marshall_mode
+      @mode.supported_pids =
+          @parser.parse_supported_pids(
+              @requester.request_supported_pids(
+                  @mode
+              )
+          )
     end
 
   end

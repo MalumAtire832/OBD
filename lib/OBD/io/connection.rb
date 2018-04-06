@@ -1,5 +1,3 @@
-require_relative 'error'
-
 require 'serialport'
 
 module OBD
@@ -16,7 +14,6 @@ module OBD
     attr_reader :settings, :port
 
     # noinspection RubyControlFlowConversionInspection
-    public
     def initialize(settings = DEFAULT_SETTINGS)
       raise OBD::ParameterError.missing("settings[:device]") if !__has_device?(settings)
       @settings = __transform_settings(settings)
@@ -29,12 +26,10 @@ module OBD
       )
     end
 
-    public
     def read
       @port.readline.chomp
     end
 
-    public
     def write(command)
       @port.write(command)
     end

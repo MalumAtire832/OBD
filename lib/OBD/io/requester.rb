@@ -1,17 +1,14 @@
-require_relative 'error'
-require_relative 'conversion'
-require_relative 'mode'
+require 'OBD/conversion'
+require 'OBD/abstract/mode'
 
 module OBD
 
   class Requester
 
-    public
     def initialize(connection)
       @connection = connection
     end
 
-    public
     def request(mode, pid)
       m, p = mode.empty?, pid.empty?
       raise OBD::ParameterError.missing(m ? 'mode' : 'pid') if m || p
@@ -19,21 +16,18 @@ module OBD
       __read_response
     end
 
-    public
     def request_direct(command)
       raise OBD::ParameterError.missing('command') if command.empty?
       @connection.write("#{command}\r")
       __read_response
     end
 
-    public
     def request_raw(command)
       raise OBD::ParameterError.missing('command') if command.empty?
       @connection.write("#{command}\r")
       __read_response(raw=true)
     end
 
-    public
     def request_supported_pids(mode)
       mode.indexes.map {|i| request(mode.code, i).value}
     end
@@ -55,8 +49,7 @@ module OBD
 
       attr_reader :previous, :mode, :pid, :value
 
-      public
-      def initialize(previous, input, raw = false)
+      def initialize(previous, input, raw = false) # FixMe: This is ugly, very, very ugly.
         p, i = previous.gsub("\r", '').gsub('>',''), input
         if ['NO DATA', '?', ''].include?(i)
           @previous = p
