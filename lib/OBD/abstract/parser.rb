@@ -1,9 +1,9 @@
 require 'OBD/conversion'
 
 module OBD
-  include Conversion
 
   class Parser
+    include Conversion
 
     def parse_supported_pids(pids)
       count, result = 0, {}
